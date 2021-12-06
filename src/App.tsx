@@ -1,12 +1,17 @@
 import './App.less';
 
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+
+import Router from './router';
 
 function App() {
     return (
-        <div className="App">
-            <header className="App-header">Trainer Card Maker</header>
-        </div>
+        <main>
+            <BrowserRouter>
+                <Router />
+            </BrowserRouter>
+        </main>
     );
 }
 
