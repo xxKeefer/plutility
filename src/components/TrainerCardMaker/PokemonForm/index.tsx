@@ -2,19 +2,21 @@ import { Button, Empty, Form, Select } from 'antd'
 import pokemon from 'pokemon'
 import { useState } from 'react'
 
-import { debounce } from '../../../utils'
+import { useTCM } from '~/contexts'
+import { debounce } from '~/utils'
 
 interface PokemonFormFields {
     pokemon: string
 }
 
 export const PokemonForm = () => {
+    const { team, updateTeam } = useTCM()
+
     const [form] = Form.useForm<PokemonFormFields>()
     const [filteredNames, setFilteredNames] = useState<string[]>([])
-    const [selectedPokemon, setSelectedPokemon] = useState<string[]>([])
 
     const onSubmit = () => {
-        return console.log({ selectedPokemon })
+        return console.log({ team })
     }
 
     const onSearch = debounce((search: string) => {
@@ -33,6 +35,7 @@ export const PokemonForm = () => {
         <Form form={form} layout="vertical" onFinish={onSubmit}>
             <Form.Item label="Pokemon" name="pokemon">
                 <Select
+                    placeholder="Start typing to search for a pokemon"
                     labelInValue
                     optionLabelProp="title"
                     notFoundContent={
@@ -55,7 +58,7 @@ export const PokemonForm = () => {
                         value: name,
                     }))}
                     onSelect={(value: any) => {
-                        setSelectedPokemon([...selectedPokemon, value.label])
+                        updateTeam([...team, value.label])
                         form.resetFields()
                     }}
                 />
@@ -63,7 +66,7 @@ export const PokemonForm = () => {
             <Button onClick={form.submit} type="primary">
                 Submit Team
             </Button>
-            <Button onClick={() => setSelectedPokemon([])} type="ghost">
+            <Button onClick={() => updateTeam([])} type="ghost">
                 Clear Team
             </Button>
         </Form>
