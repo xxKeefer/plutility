@@ -19,8 +19,8 @@ export const PokemonForm = () => {
 
     const onSearch = debounce((search: string) => {
         if (search.length < 2) return
-        const names = pokemon
-            .all()
+        const names = [...pokemon.all(), 'Indeedee-male', 'Indeedee-female']
+            .filter((poke) => poke !== 'Indeedee')
             .filter((poke) => poke.toLowerCase().indexOf(search.toLowerCase()) !== -1)
 
         setFilteredNames(names)
