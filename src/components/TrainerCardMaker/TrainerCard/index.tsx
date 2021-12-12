@@ -6,44 +6,63 @@ import { TrainerCardBackground } from '~/style/media'
 import { capitalize, displayTypes, typeColour } from '~/utils'
 
 const Banner = styled.div`
-    // border: 2px solid magenta;
     width: 540px;
-    height: 50px;
+    height: 120px;
     position: absolute;
     top: 42px;
     left: 220px;
     text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 `
 
 const PokemonDisplay = styled.div`
     width: 700px;
     height: 310px;
     position: absolute;
-    top: 110px;
+    top: 115px;
     left: 65px;
-`
-const PokeName = styled.h1`
-    font-family: 'PKMN';
-    font-size: 10px;
-`
-const PokeNickname = styled.h2`
-    font-family: 'PKMN';
-    font-size: 13px;
-`
-const PokeBanner = styled.p`
-    font-family: 'Pocket Monk';
-    font-size: 46px;
 `
 
 const SmallTag = styled(Tag)`
+    font-family: 'Roboto';
+    color: white;
     font-size: 8px;
     line-height: 10px;
     border-radius: 2px;
     padding-top: 1px;
+    border: none;
 `
+
+interface TextProps {
+    fontSize: number
+    children: string
+}
+const GBText = ({ fontSize, children }: TextProps) => {
+    const Text = styled.p`
+        font-family: 'PKMN';
+        font-size: ${fontSize}px;
+    `
+
+    return <Text>{children}</Text>
+}
+const PokeText = ({ fontSize, children }: TextProps) => {
+    const Text = styled.p`
+        font-family: 'Pocket Monk';
+        font-size: ${fontSize}px;
+    `
+
+    return <Text>{children}</Text>
+}
 
 export const TrainerCard = () => {
     const { data } = useTCM()
+    const title = `${data.trainer}'s ${data.teamName}`
+
+    const titleSize = title.length <= 25 ? 46 : 36
+    console.log(titleSize)
+
     return (
         <div style={{ position: 'relative' }}>
             <TrainerCardBackground />
@@ -51,9 +70,7 @@ export const TrainerCard = () => {
                 <Banner>
                     <Row gutter={[0, 0]}>
                         <Col span={24}>
-                            <PokeBanner>
-                                {data.trainer}'s {data.teamName}
-                            </PokeBanner>
+                            <PokeText fontSize={titleSize}>{title}</PokeText>
                         </Col>
                     </Row>
                 </Banner>
@@ -66,7 +83,7 @@ export const TrainerCard = () => {
                                 <Space direction="vertical" align="center" size={0}>
                                     <Col>
                                         <img
-                                            style={{ maxHeight: 90 }}
+                                            style={{ maxHeight: 83 }}
                                             src={p.pokemon?.sprites?.front_default ?? undefined}
                                             alt={p.pokemon.species?.name ?? ''}
                                         />
@@ -78,10 +95,16 @@ export const TrainerCard = () => {
                                             ))}
                                     </Col>
                                     <Col>
-                                        <PokeName>{capitalize(p.pokemon.name ?? '')}</PokeName>
+                                        <GBText fontSize={10}>
+                                            {capitalize(p.pokemon.name ?? '')}
+                                        </GBText>
                                     </Col>
                                     <Col>
-                                        <PokeNickname>{capitalize(p.nickname ?? '')}</PokeNickname>
+                                        <GBText
+                                            fontSize={(p.nickname?.length ?? 0) <= 13 ? 13 : 10}
+                                        >
+                                            {capitalize(p.nickname ?? '')}
+                                        </GBText>
                                     </Col>
                                 </Space>
                             </Row>
