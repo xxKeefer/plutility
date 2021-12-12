@@ -1,11 +1,10 @@
 import { Button, Col, Empty, Form, Input, Row, Select } from 'antd'
-import pokemon from 'pokemon'
 import { PokemonClient } from 'pokenode-ts'
 import { useState } from 'react'
 
 import { useTCM } from '~/contexts'
 import { SelectValue } from '~/types'
-import { debounce } from '~/utils'
+import { debounce, pokeNames } from '~/utils'
 
 interface PokemonFormFields {
     pokemon: string
@@ -17,11 +16,13 @@ export const PokemonForm = () => {
     const [form] = Form.useForm<PokemonFormFields>()
     const [filteredNames, setFilteredNames] = useState<string[]>([])
 
+    const detect = (search: string) => {
+        return (el: string) => el.toLowerCase().indexOf(search.toLowerCase()) !== -1
+    }
+
     const onSearch = debounce((search: string) => {
         if (search.length < 2) return
-        const names = [...pokemon.all(), 'Indeedee-male', 'Indeedee-female']
-            .filter((poke) => poke !== 'Indeedee')
-            .filter((poke) => poke.toLowerCase().indexOf(search.toLowerCase()) !== -1)
+        const names = pokeNames.filter(detect(search))
 
         setFilteredNames(names)
     })
