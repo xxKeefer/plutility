@@ -1,8 +1,10 @@
 import { Button, Empty, Form, Select } from 'antd'
 import pokemon from 'pokemon'
+import { PokemonClient } from 'pokenode-ts'
 import { useState } from 'react'
 
 import { useTCM } from '~/contexts'
+import { SelectValue } from '~/types'
 import { debounce } from '~/utils'
 
 interface PokemonFormFields {
@@ -10,7 +12,7 @@ interface PokemonFormFields {
 }
 
 export const PokemonForm = () => {
-    const { team, updateTeam } = useTCM()
+    const { team, setTeam } = useTCM()
 
     const [form] = Form.useForm<PokemonFormFields>()
     const [filteredNames, setFilteredNames] = useState<string[]>([])
@@ -20,13 +22,10 @@ export const PokemonForm = () => {
     }
 
     const onSearch = debounce((search: string) => {
-        if (search.length < 3) return
+        if (search.length < 2) return
         const names = pokemon
             .all()
-            .filter(
-                (poke) =>
-                    poke.toLowerCase().indexOf(search.toLowerCase()) !== -1
-            )
+            .filter((poke) => poke.toLowerCase().indexOf(search.toLowerCase()) !== -1)
 
         setFilteredNames(names)
     })
@@ -38,27 +37,27 @@ export const PokemonForm = () => {
                     placeholder="Start typing to search for a pokemon"
                     labelInValue
                     optionLabelProp="title"
-                    notFoundContent={
-                        <Empty description="Start typing to search for a pokemon" />
-                    }
+                    notFoundContent={<Empty description="Start typing to search for a pokemon" />}
                     showSearch
                     allowClear
                     onSearch={onSearch}
                     filterOption={(input, option) => {
                         if (!option) return false
 
-                        return (
-                            option.value
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                        )
+                        return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }}
                     options={filteredNames.map((name) => ({
                         label: name,
                         value: name,
                     }))}
-                    onSelect={(value: any) => {
-                        updateTeam([...team, value.label])
+                    onSelect={async ({ value }: SelectValue) => {
+                        const pokeAPI = new PokemonClient()
+
+                        await pokeAPI
+                            .getPokemonByName(value.toLowerCase())
+                            .then((data) => setTeam([...team, { pokemon: data }]))
+                            .catch((error) => console.error(error))
+
                         form.resetFields()
                     }}
                 />
@@ -66,7 +65,7 @@ export const PokemonForm = () => {
             <Button onClick={form.submit} type="primary">
                 Submit Team
             </Button>
-            <Button onClick={() => updateTeam([])} type="ghost">
+            <Button onClick={() => setTeam([])} type="ghost">
                 Clear Team
             </Button>
         </Form>
