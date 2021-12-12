@@ -16,7 +16,7 @@ export const PokePanel = ({ slot }: PokePanelProps) => {
     const [pokemon, setPokemon] = useState<Pokemon>()
     const [species, setSpecies] = useState<PokemonSpecies>()
 
-    const { team, setTeam } = useTCM()
+    const { actions, data } = useTCM()
 
     const displayTypes = (types: Pokemon['types']) => {
         return types.map((type) => type.type.name.toUpperCase())
@@ -47,8 +47,8 @@ export const PokePanel = ({ slot }: PokePanelProps) => {
 
     useEffect(() => {
         if (!pokemon) return
-        const filtered = team.filter((p) => p.pokemon.species.name !== pokemon.species.name)
-        setTeam([...filtered, { nickname, pokemon }])
+        const filtered = data.team.filter((p) => p.pokemon.species.name !== pokemon.species.name)
+        actions.setTeam([...filtered, { nickname, pokemon }])
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pokemon, nickname])
 
@@ -84,7 +84,7 @@ export const PokePanel = ({ slot }: PokePanelProps) => {
                                 placeholder="Nickname"
                                 defaultValue={nickname}
                                 onChange={(e) => {
-                                    debounce((e: any) => setNickname(e.target.value))(e)
+                                    debounce((e: any) => setNickname(e.target.value), 1000)(e)
                                 }}
                             ></Input>
                         </Col>

@@ -1,15 +1,21 @@
+import { Col, Row } from 'antd'
+
 import { useTCM } from '~/contexts'
 
 import PokePanel from './PokePanel'
 
 export const TeamDisplay = () => {
-    const { team } = useTCM()
+    const {
+        data: { team },
+    } = useTCM()
     return (
-        <div>
+        <Row justify="center">
             {team.map((slot) => (
-                <PokePanel key={slot.pokemon.id} slot={slot} />
+                <Col key={slot.pokemon.id} style={{ display: 'flex' }}>
+                    <PokePanel slot={slot} />
+                </Col>
             ))}
-        </div>
+        </Row>
     )
 }
 
