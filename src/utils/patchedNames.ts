@@ -1,6 +1,6 @@
 import pokemon from 'pokemon'
 
-const patchList: readonly string[] = ['Indeedee', 'Aegislash', 'Lycanroc'] as const
+const patchList: readonly string[] = ['Indeedee', 'Aegislash', 'Lycanroc', 'Farfetch’d'] as const
 
 const patchedNames: readonly string[] = [
     'Indeedee-male',
@@ -10,6 +10,7 @@ const patchedNames: readonly string[] = [
     'Lycanroc-midday',
     'Lycanroc-midnight',
     'Lycanroc-dusk',
+    'Farfetchd',
 ] as const
 
 const patch = (poke: string) => !patchList.includes(poke)
