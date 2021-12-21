@@ -7,6 +7,18 @@ import { TCMProvider } from '~/contexts'
 
 const TrainerCardMaker = () => {
     const png = useRef<any>(null)
+
+    const exportPNG = () => {
+        exportComponentAsPNG(png, {
+            fileName: 'trainer-card',
+            html2CanvasOptions: {
+                removeContainer: true,
+                backgroundColor: 'transparent',
+                height: 460,
+                width: 800,
+            },
+        })
+    }
     return (
         <TCMProvider>
             <Row gutter={16} align="middle" justify="center">
@@ -14,26 +26,10 @@ const TrainerCardMaker = () => {
                     <div ref={png}>
                         <TrainerCard />
                     </div>
-                    <Button
-                        onClick={() =>
-                            exportComponentAsPNG(png, {
-                                fileName: 'trainer-card',
-                                html2CanvasOptions: {
-                                    removeContainer: true,
-                                    backgroundColor: 'transparent',
-                                    height: 460,
-                                    width: 800,
-                                },
-                            })
-                        }
-                        type="ghost"
-                    >
-                        Get Card
-                    </Button>
                 </Col>
                 <Col md={20} xl={10}>
                     {/* <header>Trainer Card Maker</header> */}
-                    <PokemonForm />
+                    <PokemonForm exportPNG={exportPNG} />
                     <TeamDisplay />
                 </Col>
             </Row>
