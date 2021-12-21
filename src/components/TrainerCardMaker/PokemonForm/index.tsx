@@ -87,10 +87,10 @@ export const PokemonForm = ({ exportPNG }: PokemonFormProps) => {
                                 const pokeAPI = new PokemonClient()
 
                                 await pokeAPI
-                                    .getPokemonByName(value.toLowerCase())
-                                    .then((payload) =>
-                                        actions.setTeam([...data.team, { pokemon: payload }])
-                                    )
+                                    .getPokemonSpeciesByName(value.toLowerCase())
+                                    .then((payload) => {
+                                        actions.setPokemon([...data.pokemon, payload])
+                                    })
                                     .catch((error) => console.error(error))
 
                                 form.resetFields()
@@ -99,7 +99,13 @@ export const PokemonForm = ({ exportPNG }: PokemonFormProps) => {
                     </Form.Item>
                 </Col>
                 <Col span={4}>
-                    <Button onClick={() => actions.setTeam([])} type="ghost">
+                    <Button
+                        onClick={() => {
+                            actions.setPokemon([])
+                            actions.setTeam([])
+                        }}
+                        type="ghost"
+                    >
                         Clear Team
                     </Button>
                 </Col>

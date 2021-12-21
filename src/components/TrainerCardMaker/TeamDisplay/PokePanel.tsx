@@ -1,20 +1,31 @@
-import { Col, Input, Row, Select, Space, Tag } from 'antd'
+import { Button, Col, Input, Row, Select, Skeleton, Space, Spin, Tag } from 'antd'
 import { Pokemon, PokemonClient, PokemonSpecies } from 'pokenode-ts'
 import { useEffect, useState } from 'react'
+import { MdCancel } from 'react-icons/md'
+import styled from 'styled-components'
 
 import { useTCM } from '~/contexts'
-import { NamedPokemon } from '~/types'
+// import { NamedPokemon } from '~/types'
 import { capitalize, debounce, typeColour } from '~/utils'
 
 interface PokePanelProps {
-    slot: NamedPokemon
+    species: PokemonSpecies
 }
 
-export const PokePanel = ({ slot }: PokePanelProps) => {
-    const [name, setName] = useState<string>(slot.pokemon.name)
-    const [nickname, setNickname] = useState(slot.nickname)
+const Del = styled(Button)`
+    padding: 3px;
+    svg {
+        margin-top: 4px;
+        display: inline;
+        vertical-align: baseline;
+    }
+`
+
+export const PokePanel = ({ species }: PokePanelProps) => {
+    const [name, setName] = useState<string>(species.varieties[0].pokemon.name)
+    const [nickname, setNickname] = useState('')
     const [pokemon, setPokemon] = useState<Pokemon>()
-    const [species, setSpecies] = useState<PokemonSpecies>()
+    const [loading, setLoading] = useState(true)
 
     const { actions, data } = useTCM()
 
@@ -32,21 +43,19 @@ export const PokePanel = ({ slot }: PokePanelProps) => {
     useEffect(() => {
         ;(async () => {
             const pokeAPI = new PokemonClient()
-
+            setLoading(true)
             await pokeAPI
-                .getPokemonByName(name.toLowerCase())
+                .getPokemonByName(name)
                 .then((data) => setPokemon(data))
                 .catch((error) => console.error(error))
-
-            await pokeAPI
-                .getPokemonSpeciesByName(name.toLowerCase().split('-')[0])
-                .then((data) => setSpecies(data))
-                .catch((error) => console.error(error))
+            setLoading(false)
         })()
     }, [name])
 
     useEffect(() => {
         if (!pokemon) return
+        console.log({ team: data.team, pokemon })
+
         const filtered = data.team.filter((p) => p.pokemon.species.name !== pokemon.species.name)
         actions.setTeam([...filtered, { nickname, pokemon }])
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,60 +75,102 @@ export const PokePanel = ({ slot }: PokePanelProps) => {
             <Col>
                 <Row align="middle" justify="center" gutter={8}>
                     <Col>
-                        <img
-                            src={pokemon?.sprites?.front_default ?? undefined}
-                            alt={species?.name ?? ''}
-                        />
+                        {loading ? (
+                            <Spin size="large" spinning />
+                        ) : (
+                            <img
+                                src={pokemon?.sprites?.front_default ?? undefined}
+                                alt={species?.name ?? ''}
+                            />
+                        )}
                     </Col>
                 </Row>
             </Col>
             <Col>
                 <Space direction="vertical">
                     <Row align="middle" justify="start" gutter={8}>
-                        <Col>
-                            <Input
-                                style={{ maxWidth: 135 }}
+                        <Col span={20}>
+                            {loading ? (
+                                <Skeleton.Input size="small" active style={{ width: 135 }} />
+                            ) : (
+                                <Input
+                                    style={{ maxWidth: 135 }}
+                                    size="small"
+                                    bordered={false}
+                                    placeholder="Nickname"
+                                    defaultValue={nickname}
+                                    onChange={(e) => {
+                                        debounce((e: any) => setNickname(e.target.value), 1000)(e)
+                                    }}
+                                />
+                            )}
+                        </Col>
+                        <Col span={4}>
+                            <Del
+                                type="primary"
+                                shape="circle"
+                                icon={<MdCancel />}
                                 size="small"
-                                bordered={false}
-                                placeholder="Nickname"
-                                defaultValue={nickname}
-                                onChange={(e) => {
-                                    debounce((e: any) => setNickname(e.target.value), 1000)(e)
+                                onClick={() => {
+                                    if (!pokemon) return
+                                    const _team = data.team.filter((p) => p.pokemon.name !== name)
+                                    const _pokemon = data.pokemon.filter(
+                                        (p) => name.indexOf(p.name.toLowerCase()) < 0
+                                    )
+                                    actions.setTeam([..._team])
+                                    actions.setPokemon([..._pokemon])
                                 }}
-                            ></Input>
+                            />
                         </Col>
                     </Row>
                     <Row align="middle" justify="start" gutter={8}>
-                        <Col>{species?.id}</Col>
-                        <Col>{capitalize(species?.name ?? '')}</Col>
+                        <Col>
+                            {loading ? (
+                                <Skeleton.Input size="small" style={{ width: 40 }} active />
+                            ) : (
+                                species?.id
+                            )}
+                        </Col>
+                        <Col>
+                            {loading ? (
+                                <Skeleton.Input size="small" style={{ width: 80 }} active />
+                            ) : (
+                                capitalize(species?.name ?? '')
+                            )}
+                        </Col>
                     </Row>
 
                     <Row align="middle" justify="start" gutter={8}>
                         <Col>
                             {pokemon?.types &&
-                                displayTypes(pokemon?.types).map((type) => (
-                                    <Tag color={typeColour(type)}>{type}</Tag>
-                                ))}
+                                displayTypes(pokemon?.types).map((type) =>
+                                    loading ? (
+                                        <Skeleton.Input size="small" style={{ width: 40 }} active />
+                                    ) : (
+                                        <Tag color={typeColour(type)}>{type}</Tag>
+                                    )
+                                )}
                         </Col>
                     </Row>
                     <Row align="middle" justify="start" gutter={8}>
                         <Col>
-                            {species?.varieties && species.varieties.length > 1 && (
-                                <Select
-                                    style={{ width: 135 }}
-                                    size="small"
-                                    loading={!species}
-                                    options={species.varieties.map((form) => ({
-                                        label: makeVarietyLabel(form.pokemon.name),
-                                        value: form.pokemon.name,
-                                    }))}
-                                    defaultValue={
-                                        species.varieties.find(
-                                            (form) => form.pokemon.name === pokemon?.name
-                                        )!.pokemon.name
-                                    }
-                                    onSelect={setName}
-                                />
+                            {loading ? (
+                                <Skeleton.Input size="small" style={{ width: 135 }} active />
+                            ) : (
+                                species?.varieties &&
+                                species.varieties.length > 1 && (
+                                    <Select
+                                        style={{ width: 135 }}
+                                        size="small"
+                                        loading={!species}
+                                        options={species.varieties.map((form) => ({
+                                            label: makeVarietyLabel(form.pokemon.name),
+                                            value: form.pokemon.name,
+                                        }))}
+                                        defaultValue={species.varieties[0].pokemon.name}
+                                        onSelect={setName}
+                                    />
+                                )
                             )}
                         </Col>
                     </Row>

@@ -1,4 +1,4 @@
-import { Button, Col, Row } from 'antd'
+import { Col, Row } from 'antd'
 import { useRef } from 'react'
 import { exportComponentAsPNG } from 'react-component-export-image'
 
@@ -28,7 +28,6 @@ const TrainerCardMaker = () => {
                     </div>
                 </Col>
                 <Col md={20} xl={10}>
-                    {/* <header>Trainer Card Maker</header> */}
                     <PokemonForm exportPNG={exportPNG} />
                     <TeamDisplay />
                 </Col>

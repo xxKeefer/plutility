@@ -96,7 +96,7 @@ export const TrainerCard = () => {
                                     </Col>
                                     <Col>
                                         <GBText fontSize={10}>
-                                            {capitalize(p.pokemon.name ?? '')}
+                                            {capitalize(p.pokemon.species.name ?? '')}
                                         </GBText>
                                     </Col>
                                     <Col>

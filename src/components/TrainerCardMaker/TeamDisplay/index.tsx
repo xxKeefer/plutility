@@ -6,13 +6,13 @@ import PokePanel from './PokePanel'
 
 export const TeamDisplay = () => {
     const {
-        data: { team },
+        data: { pokemon },
     } = useTCM()
     return (
         <Row justify="center">
-            {team.map((slot) => (
-                <Col key={slot.pokemon.id} style={{ display: 'flex' }}>
-                    <PokePanel slot={slot} />
+            {pokemon.map((poke) => (
+                <Col key={poke.name} style={{ display: 'flex' }}>
+                    <PokePanel species={poke} />
                 </Col>
             ))}
         </Row>
