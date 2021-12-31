@@ -9,7 +9,7 @@ export const TeamDisplay = () => {
         data: { pokemon },
     } = useTCM()
     return (
-        <Row justify="center">
+        <Row justify="center" style={{ marginBottom: 16 }}>
             {pokemon.map((poke) => (
                 <Col key={poke.name} style={{ display: 'flex' }}>
                     <PokePanel species={poke} />

@@ -5,6 +5,23 @@ import { useTCM } from '~/contexts'
 import { TrainerCardBackground } from '~/style/media'
 import { capitalize, displayTypes, typeColour } from '~/utils'
 
+const Frame = styled.div`
+    position: relative;
+`
+type PlacementProps = {
+    top?: number
+    left?: number
+}
+const Placement = styled.div<PlacementProps>`
+    position: absolute;
+    top: ${(props) => props.top ?? 0}px;
+    left: ${(props) => props.left ?? 0}px;
+`
+const Wrap = styled.div`
+    display: flex;
+    justify-content: center;
+`
+
 const Banner = styled.div`
     width: 540px;
     height: 120px;
@@ -20,7 +37,7 @@ const Banner = styled.div`
 const PokemonDisplay = styled.div`
     width: 700px;
     height: 310px;
-    position: absolute;
+    position: relative;
     top: 115px;
     left: 65px;
 `
@@ -56,7 +73,11 @@ const PokeText = ({ fontSize, children }: TextProps) => {
     return <Text>{children}</Text>
 }
 
-export const TrainerCard = () => {
+type Props = {
+    ref: React.RefObject<HTMLDivElement>
+}
+
+export const TrainerCard = ({ ref }: Props) => {
     const { data } = useTCM()
     const title = `${data.trainer}'s ${data.teamName}`
 
@@ -64,54 +85,60 @@ export const TrainerCard = () => {
     console.log(titleSize)
 
     return (
-        <div style={{ position: 'relative' }}>
-            <TrainerCardBackground />
-            {(!!data.trainer || !!data.teamName) && (
-                <Banner>
-                    <Row gutter={[0, 0]}>
-                        <Col span={24}>
-                            <PokeText fontSize={titleSize}>{title}</PokeText>
-                        </Col>
+        <Wrap>
+            <Frame ref={ref} style={{ minWidth: '800px' }}>
+                <Placement>
+                    <TrainerCardBackground />
+                </Placement>
+                {(!!data.trainer || !!data.teamName) && (
+                    <Banner>
+                        <Row gutter={[0, 0]}>
+                            <Col span={24}>
+                                <PokeText fontSize={titleSize}>{title}</PokeText>
+                            </Col>
+                        </Row>
+                    </Banner>
+                )}
+                <PokemonDisplay>
+                    <Row align="top" justify="center" gutter={[0, 0]}>
+                        {data.team.map((p) => (
+                            <Col style={{ width: '20%' }}>
+                                <Row align="middle" justify="center" gutter={0}>
+                                    <Space direction="vertical" align="center" size={0}>
+                                        <Col>
+                                            <img
+                                                style={{ maxHeight: 83 }}
+                                                src={p.pokemon?.sprites?.front_default ?? undefined}
+                                                alt={p.pokemon.species?.name ?? ''}
+                                            />
+                                        </Col>
+                                        <Col>
+                                            {p.pokemon.types &&
+                                                displayTypes(p.pokemon.types).map((type) => (
+                                                    <SmallTag color={typeColour(type)}>
+                                                        {type}
+                                                    </SmallTag>
+                                                ))}
+                                        </Col>
+                                        <Col>
+                                            <GBText fontSize={10}>
+                                                {capitalize(p.pokemon.species.name ?? '')}
+                                            </GBText>
+                                        </Col>
+                                        <Col>
+                                            <GBText
+                                                fontSize={(p.nickname?.length ?? 0) <= 13 ? 13 : 10}
+                                            >
+                                                {capitalize(p.nickname ?? '')}
+                                            </GBText>
+                                        </Col>
+                                    </Space>
+                                </Row>
+                            </Col>
+                        ))}
                     </Row>
-                </Banner>
-            )}
-            <PokemonDisplay>
-                <Row align="top" justify="center" gutter={[0, 0]}>
-                    {data.team.map((p) => (
-                        <Col style={{ width: '20%' }}>
-                            <Row align="middle" justify="center" gutter={0}>
-                                <Space direction="vertical" align="center" size={0}>
-                                    <Col>
-                                        <img
-                                            style={{ maxHeight: 83 }}
-                                            src={p.pokemon?.sprites?.front_default ?? undefined}
-                                            alt={p.pokemon.species?.name ?? ''}
-                                        />
-                                    </Col>
-                                    <Col>
-                                        {p.pokemon.types &&
-                                            displayTypes(p.pokemon.types).map((type) => (
-                                                <SmallTag color={typeColour(type)}>{type}</SmallTag>
-                                            ))}
-                                    </Col>
-                                    <Col>
-                                        <GBText fontSize={10}>
-                                            {capitalize(p.pokemon.species.name ?? '')}
-                                        </GBText>
-                                    </Col>
-                                    <Col>
-                                        <GBText
-                                            fontSize={(p.nickname?.length ?? 0) <= 13 ? 13 : 10}
-                                        >
-                                            {capitalize(p.nickname ?? '')}
-                                        </GBText>
-                                    </Col>
-                                </Space>
-                            </Row>
-                        </Col>
-                    ))}
-                </Row>
-            </PokemonDisplay>
-        </div>
+                </PokemonDisplay>
+            </Frame>
+        </Wrap>
     )
 }

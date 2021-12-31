@@ -1,12 +1,19 @@
 import { Col, Row } from 'antd'
 import { useRef } from 'react'
 import { exportComponentAsPNG } from 'react-component-export-image'
+import styled from 'styled-components'
 
 import { PokemonForm, TeamDisplay, TrainerCard } from '~/components'
 import { TCMProvider } from '~/contexts'
+import { MainLayout } from '~/layout'
+
+const FrameRow = styled(Row)`
+    padding: 16px;
+    max-width: 100%;
+`
 
 const TrainerCardMaker = () => {
-    const png = useRef<any>(null)
+    const png = useRef<HTMLDivElement>(null)
 
     const exportPNG = () => {
         exportComponentAsPNG(png, {
@@ -20,19 +27,17 @@ const TrainerCardMaker = () => {
         })
     }
     return (
-        <TCMProvider>
-            <Row gutter={16} align="middle" justify="center">
-                <Col md={20} xl={14}>
-                    <div ref={png}>
-                        <TrainerCard />
-                    </div>
-                </Col>
-                <Col md={20} xl={10}>
-                    <PokemonForm exportPNG={exportPNG} />
-                    <TeamDisplay />
-                </Col>
-            </Row>
-        </TCMProvider>
+        <MainLayout>
+            <TCMProvider>
+                <FrameRow gutter={16} align="middle" justify="center">
+                    <Col>
+                        <PokemonForm exportPNG={exportPNG} />
+                        <TeamDisplay />
+                        <TrainerCard ref={png} />
+                    </Col>
+                </FrameRow>
+            </TCMProvider>
+        </MainLayout>
     )
 }
 

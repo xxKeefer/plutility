@@ -1,26 +1,23 @@
-import { Spin } from 'antd';
-import React, { lazy, Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Spin } from 'antd'
+import React, { lazy, Suspense } from 'react'
+import { Route, Routes } from 'react-router-dom'
 
-import { ROUTES } from '../constants';
+import { ROUTES } from '../constants'
 
-const TrainerCardMaker = lazy(() => import('../pages/TrainerCardMaker'));
+const TrainerCardMaker = lazy(() => import('../pages/TrainerCardMaker'))
 
 const Router = () => {
     return (
         <Suspense fallback={<Fallback />}>
             <Routes>
                 <Route path={ROUTES.SLASH} element={<TrainerCardMaker />} />
-                <Route
-                    path={ROUTES.TRAINER_CARD}
-                    element={<TrainerCardMaker />}
-                />
+                <Route path={ROUTES.TRAINER_CARD} element={<TrainerCardMaker />} />
             </Routes>
         </Suspense>
-    );
-};
+    )
+}
 
-export default Router;
+export default Router
 
 const Fallback = () => {
     return (
@@ -35,5 +32,5 @@ const Fallback = () => {
         >
             <Spin size="large" />
         </div>
-    );
-};
+    )
+}
