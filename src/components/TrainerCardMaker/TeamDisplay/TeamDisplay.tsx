@@ -11,7 +11,7 @@ export const TeamDisplay = () => {
     return (
         <Row justify="center" style={{ marginBottom: 16 }}>
             {pokemon.map((poke) => (
-                <Col key={poke.name} style={{ display: 'flex' }}>
+                <Col key={poke.id} style={{ display: 'flex' }}>
                     <PokePanel species={poke} />
                 </Col>
             ))}

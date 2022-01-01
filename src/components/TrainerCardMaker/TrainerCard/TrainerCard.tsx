@@ -86,7 +86,7 @@ export const TrainerCard = () => {
                     <PokemonDisplay>
                         <Row align="top" justify="center" gutter={[0, 0]}>
                             {data.team.map((p) => (
-                                <Col style={{ width: '20%' }}>
+                                <Col key={p.pokemon.id} style={{ width: '20%' }}>
                                     <Row align="middle" justify="center" gutter={0}>
                                         <Space direction="vertical" align="center" size={0}>
                                             <Col>
@@ -102,7 +102,10 @@ export const TrainerCard = () => {
                                             <Col>
                                                 {p.pokemon.types &&
                                                     displayTypes(p.pokemon.types).map((type) => (
-                                                        <SmallTag color={typeColour(type)}>
+                                                        <SmallTag
+                                                            key={type}
+                                                            color={typeColour(type)}
+                                                        >
                                                             {type}
                                                         </SmallTag>
                                                     ))}

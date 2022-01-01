@@ -42,6 +42,8 @@ export const PokePanel = ({ species }: PokePanelProps) => {
     }
 
     useEffect(() => {
+        console.log({ name })
+
         ;(async () => {
             const pokeAPI = new PokemonClient()
             setLoading(true)
@@ -55,16 +57,16 @@ export const PokePanel = ({ species }: PokePanelProps) => {
 
     useEffect(() => {
         if (!pokemon) return
-        console.log({ team: data.team, pokemon })
+        // console.log({ team: data.team, pokemon })
 
         const filtered = data.team.filter((p) => p.pokemon.species.name !== pokemon.species.name)
         actions.setTeam([...filtered, { nickname, pokemon }])
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pokemon, nickname])
 
-    useEffect(() => {
-        console.log({ pokemon, species })
-    }, [pokemon, species])
+    // useEffect(() => {
+    //     console.log({ pokemon, species })
+    // }, [pokemon, species])
 
     return (
         <Row
@@ -146,9 +148,16 @@ export const PokePanel = ({ species }: PokePanelProps) => {
                             {pokemon?.types &&
                                 displayTypes(pokemon?.types).map((type) =>
                                     loading ? (
-                                        <Skeleton.Input size="small" style={{ width: 40 }} active />
+                                        <Skeleton.Input
+                                            key={type}
+                                            size="small"
+                                            style={{ width: 40 }}
+                                            active
+                                        />
                                     ) : (
-                                        <Tag color={typeColour(type)}>{type}</Tag>
+                                        <Tag key={type} color={typeColour(type)}>
+                                            {type}
+                                        </Tag>
                                     )
                                 )}
                         </Col>
