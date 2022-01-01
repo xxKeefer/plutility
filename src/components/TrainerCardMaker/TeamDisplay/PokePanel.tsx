@@ -5,6 +5,7 @@ import { MdCancel } from 'react-icons/md'
 import styled from 'styled-components'
 
 import { useTCM } from '~/contexts'
+import { SelectValue } from '~/types'
 // import { NamedPokemon } from '~/types'
 import { capitalize, debounce, typeColour } from '~/utils'
 
@@ -168,7 +169,12 @@ export const PokePanel = ({ species }: PokePanelProps) => {
                                             value: form.pokemon.name,
                                         }))}
                                         defaultValue={species.varieties[0].pokemon.name}
-                                        onSelect={setName}
+                                        // onSelect={setName}
+                                        onSelect={(raw) => {
+                                            //antd types for select value is bugged, overriding this to fix
+                                            const { value } = raw as SelectValue
+                                            setName(value)
+                                        }}
                                     />
                                 )
                             )}

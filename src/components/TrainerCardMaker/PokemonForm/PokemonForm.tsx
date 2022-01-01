@@ -75,7 +75,9 @@ export const PokemonForm = () => {
                                 label: name,
                                 value: name,
                             }))}
-                            onSelect={async ({ value }: SelectValue) => {
+                            onSelect={async (raw) => {
+                                //antd types for select value is bugged, overriding this to fix
+                                const { value } = raw as SelectValue
                                 const pokeAPI = new PokemonClient()
 
                                 await pokeAPI
