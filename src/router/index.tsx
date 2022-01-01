@@ -2,18 +2,23 @@ import { Spin } from 'antd'
 import React, { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
 
+import { MainLayout } from '~/layout'
+
 import { ROUTES } from '../constants'
 
+const HomePage = lazy(() => import('../pages/Home'))
 const TrainerCardMaker = lazy(() => import('../pages/TrainerCardMaker'))
 
 const Router = () => {
     return (
-        <Suspense fallback={<Fallback />}>
-            <Routes>
-                <Route path={ROUTES.SLASH} element={<TrainerCardMaker />} />
-                <Route path={ROUTES.TRAINER_CARD} element={<TrainerCardMaker />} />
-            </Routes>
-        </Suspense>
+        <MainLayout>
+            <Suspense fallback={<Fallback />}>
+                <Routes>
+                    <Route path={ROUTES.SLASH} element={<HomePage />} />
+                    <Route path={ROUTES.TRAINER_CARD} element={<TrainerCardMaker />} />
+                </Routes>
+            </Suspense>
+        </MainLayout>
     )
 }
 
