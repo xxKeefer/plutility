@@ -1,7 +1,6 @@
 import styled from 'styled-components'
-import { GBText, PokeText } from '~/components'
 
-import { MainLayout } from '~/layout'
+import { GBText, PokeText } from '~/components'
 
 const Center = styled.div`
     display: flex;
