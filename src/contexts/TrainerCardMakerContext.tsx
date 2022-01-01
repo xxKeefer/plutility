@@ -1,5 +1,5 @@
 import { PokemonSpecies } from 'pokenode-ts'
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 
 import { NamedPokemon } from '~/types'
 
@@ -42,10 +42,6 @@ function TCMProvider({ children }: { children: JSX.Element }) {
     const actions: Actions = { setPokemon, setTeam, setTrainer, setTeamName }
 
     const context = { data, actions }
-
-    useEffect(() => {
-        console.log({ team, pokemon })
-    }, [team, pokemon])
 
     return <TCMContext.Provider value={context}>{children}</TCMContext.Provider>
 }
