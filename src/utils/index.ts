@@ -1,6 +1,7 @@
 export * from './capitalize'
 export * from './debounce'
 export * from './displayTypes'
+export * from './getLocationName'
 export * from './patchedNames'
 export * from './scrolling'
 export * from './typeColor'
