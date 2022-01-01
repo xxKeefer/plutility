@@ -40,7 +40,6 @@ export const PokePanel = ({ species }: PokePanelProps) => {
     }
 
     useEffect(() => {
-        console.log({ name })
         ;(async () => {
             const pokeAPI = new PokemonClient()
             setLoading(true)
