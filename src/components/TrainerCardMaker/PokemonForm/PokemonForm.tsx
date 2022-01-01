@@ -10,11 +10,7 @@ interface PokemonFormFields {
     pokemon: string
 }
 
-type PokemonFormProps = {
-    exportPNG: () => void
-}
-
-export const PokemonForm = ({ exportPNG }: PokemonFormProps) => {
+export const PokemonForm = () => {
     const { actions, data } = useTCM()
 
     const [form] = Form.useForm<PokemonFormFields>()
@@ -34,7 +30,7 @@ export const PokemonForm = ({ exportPNG }: PokemonFormProps) => {
     return (
         <Form form={form} layout="vertical">
             <Row justify="center" gutter={16}>
-                <Col span={8}>
+                <Col span={10}>
                     <Form.Item name="trainer">
                         <Input
                             placeholder="Trainer Name"
@@ -45,7 +41,7 @@ export const PokemonForm = ({ exportPNG }: PokemonFormProps) => {
                         />
                     </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={10}>
                     <Form.Item name="teamName">
                         <Input
                             placeholder="Team Name"
@@ -56,11 +52,7 @@ export const PokemonForm = ({ exportPNG }: PokemonFormProps) => {
                         />
                     </Form.Item>
                 </Col>
-                <Col span={4}>
-                    <Button onClick={exportPNG} type="ghost">
-                        Get Card
-                    </Button>
-                </Col>
+
                 <Col span={16}>
                     <Form.Item name="pokemon">
                         <Select

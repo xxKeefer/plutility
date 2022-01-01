@@ -1,4 +1,6 @@
-import { Col, Row, Space, Tag } from 'antd'
+import { Button, Col, Row, Space, Tag } from 'antd'
+import { useRef } from 'react'
+import { exportComponentAsPNG } from 'react-component-export-image'
 import styled from 'styled-components'
 
 import { Frame, GBText, Placement, PokeText } from '~/components'
@@ -35,22 +37,39 @@ const SmallTag = styled(Tag)`
     border: none;
 `
 
-type Props = {
-    ref: React.RefObject<HTMLDivElement>
-}
-
-export const TrainerCard = ({ ref }: Props) => {
+export const TrainerCard = () => {
     const { data } = useTCM()
     const title = `${data.trainer}'s ${data.teamName}`
-
     const titleSize = title.length <= 25 ? 46 : 36
-    console.log(titleSize)
+
+    const png = useRef<HTMLDivElement>(null)
+
+    const exportPNG = () => {
+        exportComponentAsPNG(png, {
+            fileName: 'trainer-card',
+            html2CanvasOptions: {
+                removeContainer: true,
+                backgroundColor: 'transparent',
+                height: 460,
+                width: 800,
+            },
+        })
+    }
 
     return (
         <Wrap>
-            <Frame ref={ref} style={{ minWidth: '800px' }}>
+            <Frame ref={png} style={{ minWidth: '800px' }}>
                 <Placement>
                     <TrainerCardBackground />
+                    <Button
+                        style={{ marginTop: 16 }}
+                        type="primary"
+                        shape="round"
+                        block
+                        onClick={exportPNG}
+                    >
+                        Download
+                    </Button>
                 </Placement>
                 {(!!data.trainer || !!data.teamName) && (
                     <Placement top={42} left={220}>
