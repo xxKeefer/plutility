@@ -1,3 +1,3 @@
-export * from './PokemonForm'
-export * from './TeamDisplay'
-export * from './TrainerCard'
+export * from './PokemonForm/PokemonForm'
+export * from './TeamDisplay/TeamDisplay'
+export * from './TrainerCard/TrainerCard'
