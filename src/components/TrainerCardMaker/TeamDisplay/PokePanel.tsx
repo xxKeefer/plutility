@@ -5,8 +5,6 @@ import { MdCancel } from 'react-icons/md'
 import styled from 'styled-components'
 
 import { useTCM } from '~/contexts'
-import { SelectValue } from '~/types'
-// import { NamedPokemon } from '~/types'
 import { capitalize, debounce, typeColour } from '~/utils'
 
 interface PokePanelProps {
@@ -43,7 +41,6 @@ export const PokePanel = ({ species }: PokePanelProps) => {
 
     useEffect(() => {
         console.log({ name })
-
         ;(async () => {
             const pokeAPI = new PokemonClient()
             setLoading(true)
@@ -57,16 +54,10 @@ export const PokePanel = ({ species }: PokePanelProps) => {
 
     useEffect(() => {
         if (!pokemon) return
-        // console.log({ team: data.team, pokemon })
-
         const filtered = data.team.filter((p) => p.pokemon.species.name !== pokemon.species.name)
         actions.setTeam([...filtered, { nickname, pokemon }])
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pokemon, nickname])
-
-    // useEffect(() => {
-    //     console.log({ pokemon, species })
-    // }, [pokemon, species])
 
     return (
         <Row
@@ -178,11 +169,9 @@ export const PokePanel = ({ species }: PokePanelProps) => {
                                             value: form.pokemon.name,
                                         }))}
                                         defaultValue={species.varieties[0].pokemon.name}
-                                        // onSelect={setName}
-                                        onSelect={(raw) => {
+                                        onSelect={(value) => {
                                             //antd types for select value is bugged, overriding this to fix
-                                            const { value } = raw as SelectValue
-                                            setName(value)
+                                            setName(value as string)
                                         }}
                                     />
                                 )
