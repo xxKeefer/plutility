@@ -10,6 +10,7 @@ import { capitalize, displayTypes, typeColour } from '~/utils'
 
 const Wrap = styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: center;
 `
 
@@ -61,15 +62,6 @@ export const TrainerCard = () => {
             <Frame ref={png} style={{ minWidth: '800px' }}>
                 <Placement>
                     <TrainerCardBackground />
-                    <Button
-                        style={{ marginTop: 16 }}
-                        type="primary"
-                        shape="round"
-                        block
-                        onClick={exportPNG}
-                    >
-                        Download
-                    </Button>
                 </Placement>
                 {(!!data.trainer || !!data.teamName) && (
                     <Placement top={42} left={220}>
@@ -132,6 +124,15 @@ export const TrainerCard = () => {
                     </PokemonDisplay>
                 </Placement>
             </Frame>
+            <Button
+                style={{ marginTop: 476, maxWidth: 800 }}
+                type="primary"
+                shape="round"
+                block
+                onClick={exportPNG}
+            >
+                Download
+            </Button>
         </Wrap>
     )
 }
