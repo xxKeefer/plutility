@@ -12,6 +12,7 @@ const Wrap = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    max-width: 800px;
 `
 
 const Banner = styled.div`
@@ -59,7 +60,7 @@ export const TrainerCard = () => {
 
     return (
         <Wrap>
-            <Frame ref={png} style={{ minWidth: '800px' }}>
+            <Frame ref={png} height={460} width={800}>
                 <Placement>
                     <TrainerCardBackground />
                 </Placement>
@@ -125,7 +126,7 @@ export const TrainerCard = () => {
                 </Placement>
             </Frame>
             <Button
-                style={{ marginTop: 476, maxWidth: 800 }}
+                style={{ marginTop: 16 }}
                 type="primary"
                 shape="round"
                 block
