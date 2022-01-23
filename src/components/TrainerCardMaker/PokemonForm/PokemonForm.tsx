@@ -38,7 +38,6 @@ export const PokemonForm = () => {
                     <Form.Item name="trainer">
                         <Input
                             placeholder="Trainer Name"
-                            // defaultValue={data.trainer}
                             onChange={(e) => {
                                 debounce((e: any) => actions.setTrainer(e.target.value), 1000)(e)
                             }}
@@ -49,7 +48,6 @@ export const PokemonForm = () => {
                     <Form.Item name="teamName">
                         <Input
                             placeholder="Team Name"
-                            // defaultValue={data.teamName}
                             onChange={(e) => {
                                 debounce((e: any) => actions.setTeamName(e.target.value), 1000)(e)
                             }}
