@@ -1,9 +1,30 @@
-import { Form, Skeleton, Table, TableColumnProps } from 'antd'
+import { Form, Skeleton, Table, TableColumnProps, Tag } from 'antd'
 import { Move, MoveClient, Pokemon, PokemonClient } from 'pokenode-ts'
 import Queue from 'queue-promise'
 import React from 'react'
+import styled from 'styled-components'
 
 import { PokeSelect } from '~/components'
+import { typeColour } from '~/utils'
+
+const TypeTag = styled(Tag)`
+    font-family: 'Roboto';
+    color: white;
+    border-radius: 2px;
+    padding-top: 1px;
+    border: none;
+`
+const Faded = styled.span`
+    color: #ccc;
+    font-family: 'Roboto';
+`
+
+const TableTitle = styled.span`
+    font-family: 'Roboto';
+    font-size: 20px;
+    text-align: center;
+    text-transform: uppercase;
+`
 
 const ThreatAnalysis = () => {
     const [form] = Form.useForm<any>()
@@ -14,6 +35,16 @@ const ThreatAnalysis = () => {
 
     const pokeAPI = new PokemonClient()
     const moveApi = new MoveClient()
+
+    // split string on "-" make elements title case
+    const titleCase = (str: string) => {
+        return str
+            .split('-')
+            .map((word) => {
+                return word.charAt(0).toUpperCase() + word.slice(1)
+            })
+            .join(' ')
+    }
 
     const determineAttack = (pokemon?: Pokemon): 'physical' | 'mixed' | 'special' | 'unknown' => {
         if (!pokemon) return 'unknown'
@@ -79,6 +110,7 @@ const ThreatAnalysis = () => {
             title: 'Name',
             dataIndex: 'name',
             sorter: (a, b) => a.name.localeCompare(b.name),
+            render: (text) => titleCase(text),
         },
         {
             title: 'Power',
@@ -95,9 +127,15 @@ const ThreatAnalysis = () => {
             dataIndex: 'type',
             sorter: (a, b) => a.type.name.localeCompare(b.type.name),
             render: (_, move) => {
-                if (pokemon?.types.map((entry) => entry.type.name).includes(move.type.name))
-                    return <strong>{move.type.name.toUpperCase()}</strong>
-                return <span>{move.type.name}</span>
+                const stab = pokemon?.types.map((entry) => entry.type.name).includes(move.type.name)
+                const type = move.type.name.toLocaleUpperCase()
+
+                return (
+                    <>
+                        <TypeTag color={typeColour(type)}>{type}</TypeTag>
+                        {stab && <Faded>(STAB)</Faded>}
+                    </>
+                )
             },
         },
 
@@ -109,7 +147,7 @@ const ThreatAnalysis = () => {
         {
             title: 'Damage',
             dataIndex: 'damage_class',
-            render: (_, move) => <span>{move?.damage_class?.name ?? ''}</span>,
+            render: (_, move) => <span>{titleCase(move?.damage_class?.name ?? '')}</span>,
             sorter: (a, b) =>
                 (a.damage_class?.name ?? '').localeCompare(b.damage_class?.name ?? ''),
         },
@@ -138,12 +176,20 @@ const ThreatAnalysis = () => {
         <Form form={form} layout="vertical">
             <PokeSelect<any> form={form} onSelect={onSelect} />
             <Skeleton active loading={loading}>
-                <Table columns={columns} dataSource={threats} />
-                {pokemon && (
-                    <div>{`${pokemon?.name} is a ${determineAttack(
-                        pokemon
-                    )} attacker and a ${determineDefense(pokemon)} defender.`}</div>
-                )}
+                <Table
+                    title={() => {
+                        if (!pokemon) return <TableTitle>Search for a pokemon above.</TableTitle>
+                        return (
+                            <TableTitle>
+                                {`${pokemon?.name} is a ${determineAttack(
+                                    pokemon
+                                )} attacker and a ${determineDefense(pokemon)} defender.`}
+                            </TableTitle>
+                        )
+                    }}
+                    columns={columns}
+                    dataSource={threats}
+                />
             </Skeleton>
         </Form>
     )
