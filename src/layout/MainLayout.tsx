@@ -1,6 +1,7 @@
 import { Layout, Menu } from 'antd'
 import { useState } from 'react'
 import { AiOutlineHome, AiOutlineIdcard } from 'react-icons/ai'
+import { GoGraph } from 'react-icons/go'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { PokeText } from '~/components'
@@ -44,6 +45,13 @@ export const MainLayout = ({ children }: LayoutProps) => {
                         onClick={() => navigate(ROUTES.TRAINER_CARD)}
                     >
                         Trainer Card Maker
+                    </Menu.Item>
+                    <Menu.Item
+                        key="3"
+                        icon={<GoGraph style={iconStyleFix(menuOpen)} />}
+                        onClick={() => navigate(ROUTES.THREAT_ANALYSIS)}
+                    >
+                        Threat Analysis
                     </Menu.Item>
                 </Menu>
             </Sider>
