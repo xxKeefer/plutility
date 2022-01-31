@@ -1,10 +1,9 @@
-import { Button, Col, Empty, Form, Input, Row, Select } from 'antd'
+import { Button, Col, Form, Input, Row } from 'antd'
 import { PokemonClient } from 'pokenode-ts'
-import { useState } from 'react'
 
+import { PokeSelect } from '~/components'
 import { useTCM } from '~/contexts'
-import { SelectValue } from '~/types'
-import { debounce, pokeNames } from '~/utils'
+import { debounce } from '~/utils'
 
 interface PokemonFormFields {
     pokemon: string
@@ -14,18 +13,17 @@ export const PokemonForm = () => {
     const { actions, data } = useTCM()
 
     const [form] = Form.useForm<PokemonFormFields>()
-    const [filteredNames, setFilteredNames] = useState<string[]>([])
 
-    const detect = (search: string) => {
-        return (el: string) => el.toLowerCase().indexOf(search.toLowerCase()) !== -1
+    const pokeAPI = new PokemonClient()
+
+    const onSelect = async (value: string) => {
+        await pokeAPI
+            .getPokemonSpeciesByName(value.toLowerCase())
+            .then((payload) => {
+                actions.setPokemon([...data.pokemon, payload])
+            })
+            .catch((error) => console.error(error))
     }
-
-    const onSearch = debounce((search: string) => {
-        if (search.length < 2) return
-        const names = pokeNames.filter(detect(search))
-
-        setFilteredNames(names)
-    })
 
     return (
         <Form
@@ -56,43 +54,11 @@ export const PokemonForm = () => {
                 </Col>
 
                 <Col span={16}>
-                    <Form.Item name="pokemon">
-                        <Select
-                            disabled={data.team.length >= 10}
-                            placeholder="Start typing to search for a pokemon"
-                            labelInValue
-                            optionLabelProp="title"
-                            notFoundContent={
-                                <Empty description="Start typing to search for a pokemon" />
-                            }
-                            showSearch
-                            allowClear
-                            onSearch={onSearch}
-                            filterOption={(input, option) => {
-                                if (!option) return false
-
-                                return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                            }}
-                            options={filteredNames.map((name) => ({
-                                label: name,
-                                value: name,
-                            }))}
-                            onSelect={async (raw) => {
-                                //antd types for select value is bugged, overriding this to fix
-                                const { value } = raw as SelectValue
-                                const pokeAPI = new PokemonClient()
-
-                                await pokeAPI
-                                    .getPokemonSpeciesByName(value.toLowerCase())
-                                    .then((payload) => {
-                                        actions.setPokemon([...data.pokemon, payload])
-                                    })
-                                    .catch((error) => console.error(error))
-
-                                form.resetFields()
-                            }}
-                        />
-                    </Form.Item>
+                    <PokeSelect<PokemonFormFields>
+                        disabled={data.team.length >= 10}
+                        form={form}
+                        onSelect={onSelect}
+                    />
                 </Col>
                 <Col span={4}>
                     <Button
